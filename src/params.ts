@@ -1,6 +1,6 @@
 export const validate = (
-  params: { [key: string]: any },
-  schema: { [key: string]: 'string' | 'number' | 'boolean' | string[] }
+  params: Record<string, unknown>,
+  schema: Record<string, 'string' | 'number' | 'boolean' | string[]>
 ) => {
   const missing: string[] = [];
   const keys = Object.keys(schema);
@@ -26,11 +26,14 @@ export const validate = (
         error: `Parameter (${key}) type need ${schema[key]}`,
       };
     } else if (
+      typeof params[key] === 'string' &&
       Array.isArray(schema[key]) &&
-      !schema[key].includes(params[key])
+      !schema[key].includes(params[key] as string)
     ) {
       return {
-        error: `Parameter (${key}) need one of (${schema[key].toString()})`,
+        error: `Parameter (${key}) need one of (${schema[
+          key
+        ].toString()}), but got ${params[key]}`,
       };
     }
   }

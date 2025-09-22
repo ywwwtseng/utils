@@ -147,28 +147,42 @@ var retry = ({ retries, delay = 5e3 }) => async (exec) => {
 
 // src/params.ts
 var validate = (params, schema) => {
-  const missing = [];
   const keys = Object.keys(schema);
   for (let index = 0; index < keys.length; index++) {
     const key = keys[index];
     if (params[key] === void 0) {
-      missing.push(key);
-    }
-  }
-  if (missing.length !== 0) {
-    return {
-      error: `Missing parameters (${missing.toString()})`
-    };
-  }
-  for (let index = 0; index < keys.length; index++) {
-    const key = keys[index];
-    if (typeof schema[key] === "string" && typeof params[key] !== schema[key]) {
+      return {
+        error: `Parameter (${key}) is required`
+      };
+    } else if (typeof schema[key] === "string" && typeof params[key] !== schema[key]) {
       return {
         error: `Parameter (${key}) type need ${schema[key]}`
       };
-    } else if (Array.isArray(schema[key]) && !schema[key].includes(params[key])) {
+    } else if (typeof params[key] === "string" && Array.isArray(schema[key]) && !schema[key].includes(params[key])) {
       return {
-        error: `Parameter (${key}) need one of (${schema[key].toString()})`
+        error: `Parameter (${key}) need one of (${schema[key].toString()}), but got ${params[key]}`
+      };
+    }
+  }
+  return {
+    error: null
+  };
+};
+var allowed = (params, schema) => {
+  const keys = Object.keys(params);
+  for (let index = 0; index < keys.length; index++) {
+    const key = keys[index];
+    if (!Object.keys(schema).includes(key)) {
+      return {
+        error: `Parameter (${key}) is not allowed`
+      };
+    } else if (typeof schema[key] === "string" && typeof params[key] !== schema[key]) {
+      return {
+        error: `Parameter (${key}) type need ${schema[key]}`
+      };
+    } else if (typeof params[key] === "string" && Array.isArray(schema[key]) && !schema[key].includes(params[key])) {
+      return {
+        error: `Parameter (${key}) need one of (${schema[key].toString()}), but got ${params[key]}`
       };
     }
   }
@@ -179,6 +193,7 @@ var validate = (params, schema) => {
 export {
   AppError,
   ErrorCodes,
+  allowed,
   get,
   ip,
   isObject,

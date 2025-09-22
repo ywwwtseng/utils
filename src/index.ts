@@ -5,3 +5,4 @@ export * from './types';
 export * from './error';
 export * from './ip';
 export * from './retry';
+export * from './params';

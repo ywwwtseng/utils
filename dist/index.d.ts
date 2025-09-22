@@ -50,4 +50,12 @@ interface RetryOptions {
 }
 declare const retry: ({ retries, delay }: RetryOptions) => <F extends () => Promise<Awaited<ReturnType<F>>>>(exec: F) => Promise<[Awaited<ReturnType<F>> | undefined, unknown]>;
 
-export { AppError, type DeepPartial, ErrorCodes, get, ip, isObject, merge, parseJSON, prune, retry, sleep, update };
+declare const validate: (params: {
+    [key: string]: any;
+}, schema: {
+    [key: string]: "string" | "number" | "boolean" | string[];
+}) => {
+    error: string;
+};
+
+export { AppError, type DeepPartial, ErrorCodes, get, ip, isObject, merge, parseJSON, prune, retry, sleep, update, validate };

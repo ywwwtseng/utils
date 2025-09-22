@@ -1,6 +1,13 @@
 export const validate = (
   params: Record<string, unknown>,
-  schema: Record<string, 'string' | 'number' | 'boolean' | string[]>
+  schema: Record<
+    string,
+    {
+      type: 'string' | 'number' | 'boolean' | 'enum';
+      enum?: string[];
+      nullable?: boolean;
+    }
+  >
 ) => {
   const keys = Object.keys(schema);
   for (let index = 0; index < keys.length; index++) {
@@ -11,16 +18,16 @@ export const validate = (
         error: `Parameter (${key}) is required`,
       };
     } else if (
-      typeof schema[key] === 'string' &&
-      typeof params[key] !== schema[key]
+      !(schema[key].nullable && params[key] === null) &&
+      schema[key].type !== 'enum' &&
+      typeof params[key] !== schema[key].type
     ) {
       return {
         error: `Parameter (${key}) type need ${schema[key]}`,
       };
     } else if (
-      typeof params[key] === 'string' &&
-      Array.isArray(schema[key]) &&
-      !schema[key].includes(params[key] as string)
+      schema[key].type === 'enum' &&
+      !schema[key].enum?.includes(params[key] as string)
     ) {
       return {
         error: `Parameter (${key}) need one of (${schema[
@@ -37,7 +44,14 @@ export const validate = (
 
 export const allowed = (
   params: Record<string, unknown>,
-  schema: Record<string, 'string' | 'number' | 'boolean' | string[]>
+  schema: Record<
+    string,
+    {
+      type: 'string' | 'number' | 'boolean' | 'enum';
+      enum?: string[];
+      nullable?: boolean;
+    }
+  >
 ) => {
   const keys = Object.keys(params);
   for (let index = 0; index < keys.length; index++) {
@@ -48,16 +62,16 @@ export const allowed = (
         error: `Parameter (${key}) is not allowed`,
       };
     } else if (
-      typeof schema[key] === 'string' &&
-      typeof params[key] !== schema[key]
+      !(schema[key].nullable && params[key] === null) &&
+      schema[key].type !== 'enum' &&
+      typeof params[key] !== schema[key].type
     ) {
       return {
         error: `Parameter (${key}) type need ${schema[key]}`,
       };
     } else if (
-      typeof params[key] === 'string' &&
-      Array.isArray(schema[key]) &&
-      !schema[key].includes(params[key] as string)
+      schema[key].type === 'enum' &&
+      !schema[key].enum?.includes(params[key] as string)
     ) {
       return {
         error: `Parameter (${key}) need one of (${schema[

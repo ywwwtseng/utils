@@ -50,10 +50,18 @@ interface RetryOptions {
 }
 declare const retry: ({ retries, delay }: RetryOptions) => <F extends () => Promise<Awaited<ReturnType<F>>>>(exec: F) => Promise<[Awaited<ReturnType<F>> | undefined, unknown]>;
 
-declare const validate: (params: Record<string, unknown>, schema: Record<string, "string" | "number" | "boolean" | string[]>) => {
+declare const validate: (params: Record<string, unknown>, schema: Record<string, {
+    type: "string" | "number" | "boolean" | "enum";
+    enum?: string[];
+    nullable?: boolean;
+}>) => {
     error: string;
 };
-declare const allowed: (params: Record<string, unknown>, schema: Record<string, "string" | "number" | "boolean" | string[]>) => {
+declare const allowed: (params: Record<string, unknown>, schema: Record<string, {
+    type: "string" | "number" | "boolean" | "enum";
+    enum?: string[];
+    nullable?: boolean;
+}>) => {
     error: string;
 };
 

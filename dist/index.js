@@ -154,11 +154,11 @@ var validate = (params, schema) => {
       return {
         error: `Parameter (${key}) is required`
       };
-    } else if (typeof schema[key] === "string" && typeof params[key] !== schema[key]) {
+    } else if (!(schema[key].nullable && params[key] === null) && schema[key].type !== "enum" && typeof params[key] !== schema[key].type) {
       return {
         error: `Parameter (${key}) type need ${schema[key]}`
       };
-    } else if (typeof params[key] === "string" && Array.isArray(schema[key]) && !schema[key].includes(params[key])) {
+    } else if (schema[key].type === "enum" && !schema[key].enum?.includes(params[key])) {
       return {
         error: `Parameter (${key}) need one of (${schema[key].toString()}), but got ${params[key]}`
       };
@@ -176,11 +176,11 @@ var allowed = (params, schema) => {
       return {
         error: `Parameter (${key}) is not allowed`
       };
-    } else if (typeof schema[key] === "string" && typeof params[key] !== schema[key]) {
+    } else if (!(schema[key].nullable && params[key] === null) && schema[key].type !== "enum" && typeof params[key] !== schema[key].type) {
       return {
         error: `Parameter (${key}) type need ${schema[key]}`
       };
-    } else if (typeof params[key] === "string" && Array.isArray(schema[key]) && !schema[key].includes(params[key])) {
+    } else if (schema[key].type === "enum" && !schema[key].enum?.includes(params[key])) {
       return {
         error: `Parameter (${key}) need one of (${schema[key].toString()}), but got ${params[key]}`
       };

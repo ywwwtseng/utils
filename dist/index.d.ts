@@ -65,4 +65,6 @@ declare const allowed: (params: Record<string, unknown>, schema: Record<string, 
     error: string;
 };
 
-export { AppError, type DeepPartial, ErrorCodes, allowed, get, ip, isObject, merge, parseJSON, prune, retry, sleep, update, validate };
+declare const errorToResponse: (error: unknown) => Response;
+
+export { AppError, type DeepPartial, ErrorCodes, allowed, errorToResponse, get, ip, isObject, merge, parseJSON, prune, retry, sleep, update, validate };

@@ -190,10 +190,35 @@ var allowed = (params, schema) => {
     error: null
   };
 };
+
+// src/response.ts
+var errorToResponse = (error) => {
+  let status = 500;
+  let message = "Unknown error";
+  if (error !== null && typeof error === "object") {
+    if ("status" in error) {
+      if (typeof error.status === "number") {
+        status = error.status;
+      }
+    }
+    if ("message" in error && typeof error.message === "string") {
+      message = error.message;
+    } else {
+      message = JSON.stringify(error);
+    }
+  }
+  return Response.json(
+    {
+      error: message
+    },
+    { status }
+  );
+};
 export {
   AppError,
   ErrorCodes,
   allowed,
+  errorToResponse,
   get,
   ip,
   isObject,

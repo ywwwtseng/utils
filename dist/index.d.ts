@@ -54,6 +54,7 @@ declare const validate: (params: Record<string, unknown>, schema: Record<string,
     type: "string" | "number" | "boolean" | "enum";
     enum?: string[];
     nullable?: boolean;
+    required?: boolean;
 }>) => {
     error: string;
 };

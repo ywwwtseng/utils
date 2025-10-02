@@ -6,6 +6,7 @@ export const validate = (
       type: 'string' | 'number' | 'boolean' | 'enum';
       enum?: string[];
       nullable?: boolean;
+      required?: boolean;
     }
   >
 ) => {
@@ -34,6 +35,24 @@ export const validate = (
           key
         ].toString()}), but got ${params[key]}`,
       };
+    } else if (schema[key].required) {
+      if (
+        schema[key].type === 'string' &&
+        typeof params[key] === 'string' &&
+        params[key].trim() === ''
+      ) {
+        return {
+          error: `Parameter (${key}) is required`,
+        };
+      } else if (
+        schema[key].type === 'number' &&
+        typeof params[key] === 'number' &&
+        params[key] === 0
+      ) {
+        return {
+          error: `Parameter (${key}) is required`,
+        };
+      }
     }
   }
 

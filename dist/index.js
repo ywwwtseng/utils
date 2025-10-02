@@ -162,6 +162,16 @@ var validate = (params, schema) => {
       return {
         error: `Parameter (${key}) need one of (${schema[key].toString()}), but got ${params[key]}`
       };
+    } else if (schema[key].required) {
+      if (schema[key].type === "string" && typeof params[key] === "string" && params[key].trim() === "") {
+        return {
+          error: `Parameter (${key}) is required`
+        };
+      } else if (schema[key].type === "number" && typeof params[key] === "number" && params[key] === 0) {
+        return {
+          error: `Parameter (${key}) is required`
+        };
+      }
     }
   }
   return {

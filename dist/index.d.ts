@@ -66,6 +66,12 @@ declare const allowed: (params: Record<string, unknown>, schema: Record<string, 
     error: string;
 };
 
+interface ErrorResponse {
+    error: string;
+    message: string;
+    error_code: number;
+    info?: Record<string, unknown>;
+}
 declare const errorToResponse: (error: unknown) => Response;
 
-export { AppError, type DeepPartial, ErrorCodes, allowed, errorToResponse, get, ip, isObject, merge, parseJSON, prune, retry, sleep, update, validate };
+export { AppError, type DeepPartial, ErrorCodes, type ErrorResponse, allowed, errorToResponse, get, ip, isObject, merge, parseJSON, prune, retry, sleep, update, validate };
